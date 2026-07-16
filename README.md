@@ -9,7 +9,7 @@ Agente de tipo RAG (Retrieval-Augmented Generation) que responde preguntas sobre
 Este proyecto fue desarrollado como capstone del curso de AI Builder de Alura. Utiliza un dataset público de tickets de soporte técnico (Kaggle) para construir un agente que permite consultar, en lenguaje natural, información sobre problemas reportados, resoluciones y patrones de soporte.
 
 ## 🏗️ Arquitectura
-
+```
 Usuario
   -> Streamlit (interfaz de chat)
   -> Pregunta en lenguaje natural
@@ -17,6 +17,7 @@ Usuario
   -> Top 3 tickets más relevantes (con umbral de relevancia)
   -> LLM (Gemini 2.5 Flash) genera respuesta usando SOLO ese contexto
   -> Respuesta + Ticket IDs citados + botones de feedback
+  ```
 
 **Componentes:**
 - **Dataset:** [Customer Support Ticket Dataset](https://www.kaggle.com/datasets/muqaddasejaz/customer-support-ticket-dataset) (Kaggle), 8,469 tickets, muestra de 100 usada para el vector store.
