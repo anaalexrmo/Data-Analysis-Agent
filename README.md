@@ -51,6 +51,24 @@ Usuario
 
 *(Este segundo ejemplo demuestra el fallback: el agente no inventa una respuesta fuera del alcance de la base de conocimiento.)*
 
+**Pregunta:** ¿Qué tipos de problemas de facturación ha reportado la gente?
+
+**Respuesta:**
+> Según el contexto proporcionado, los tipos de problemas de facturación reportados son:
+> - Problema de pago (Ticket ID: 790)
+> - Problema de pantalla (Ticket ID: 6994)
+> - Duración de la batería (Ticket ID: 3429)
+
+**Pregunta:** ¿Hay tickets críticos que sigan sin resolverse?
+
+**Respuesta:**
+> Sí, hay tickets críticos que siguen sin resolverse:
+> - Ticket ID: 7308
+> - Ticket ID: 790
+> - Ticket ID: 5509
+
+*(Este ejemplo muestra cómo el agente combina metadata de prioridad y status para filtrar resultados relevantes.)*
+
 ## 🚀 Cómo ejecutar el proyecto localmente
 
 ### 1. Clona el repositorio
