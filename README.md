@@ -2,7 +2,9 @@
 
 Agente de tipo RAG (Retrieval-Augmented Generation) que responde preguntas sobre tickets de soporte técnico, citando siempre la fuente (Ticket ID) y evitando alucinaciones cuando no encuentra información relevante.
 
-🔗 **App en vivo:** [data-analysis-agent-jw8uj9hakjkhjxnejdrwet.streamlit.app](https://data-analysis-agent-jw8uj9hakjkhjxnejdrwet.streamlit.app/)
+ 🔗 **App en vivo:** [data-analysis-agent-jw8uj9hakjkhjxnejdrwet.streamlit.app](https://data-analysis-agent-jw8uj9hakjkhjxnejdrwet.streamlit.app)
+
+![Captura del agente corriendo en la nube](assets/deploy-nube.png)
 
 ## 📋 Descripción del proyecto
 
