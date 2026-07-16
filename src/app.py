@@ -1,3 +1,6 @@
+import json
+import time
+from datetime import datetime
 import asyncio
 try:
     asyncio.get_event_loop()
@@ -32,21 +35,23 @@ vector_store, llm = cargar_recursos()
 UMBRAL_RELEVANCIA = 0.7
 
 def responder_pregunta(pregunta):
+    inicio = time.time()
+    
     resultados = vector_store.similarity_search_with_score(pregunta, k=3)
     resultados_relevantes = [(doc, score) for doc, score in resultados if score < UMBRAL_RELEVANCIA]
 
     if not resultados_relevantes:
-        return {
+        respuesta_final = {
             "respuesta": "No encontré información relevante en los tickets disponibles para responder esta pregunta.",
             "fuentes": []
         }
+    else:
+        contexto = "\n\n".join([
+            f"[Ticket ID: {doc.metadata['ticket_id']}]\n{doc.page_content}"
+            for doc, score in resultados_relevantes
+        ])
 
-    contexto = "\n\n".join([
-        f"[Ticket ID: {doc.metadata['ticket_id']}]\n{doc.page_content}"
-        for doc, score in resultados_relevantes
-    ])
-
-    prompt = f"""Eres un asistente que responde preguntas ÚNICAMENTE basándote en el contexto de tickets de soporte proporcionado abajo.
+        prompt = f"""Eres un asistente que responde preguntas ÚNICAMENTE basándote en el contexto de tickets de soporte proporcionado abajo.
 No uses conocimiento externo. Si la información no está en el contexto, dilo claramente.
 Siempre indica el Ticket ID de donde sacaste cada dato.
 
@@ -57,10 +62,28 @@ Pregunta: {pregunta}
 
 Respuesta (indica el Ticket ID de tus fuentes):"""
 
-    respuesta = llm.invoke(prompt)
-    fuentes = [doc.metadata['ticket_id'] for doc, score in resultados_relevantes]
+        respuesta = llm.invoke(prompt)
+        fuentes = [doc.metadata['ticket_id'] for doc, score in resultados_relevantes]
+        respuesta_final = {"respuesta": respuesta.content, "fuentes": fuentes}
 
-    return {"respuesta": respuesta.content, "fuentes": fuentes}
+    tiempo_respuesta = round(time.time() - inicio, 2)
+    registrar_log(pregunta, respuesta_final, tiempo_respuesta)
+
+    return respuesta_final
+
+
+def registrar_log(pregunta, resultado, tiempo_respuesta):
+    log_entry = {
+        "timestamp": datetime.now().isoformat(),
+        "pregunta": pregunta,
+        "fuentes_ticket_ids": resultado["fuentes"],
+        "respuesta": resultado["respuesta"],
+        "tiempo_respuesta_segundos": tiempo_respuesta
+    }
+    log_path = os.path.join(BASE_DIR, "..", "logs", "interactions.jsonl")
+    os.makedirs(os.path.dirname(log_path), exist_ok=True)
+    with open(log_path, "a", encoding="utf-8") as f:
+        f.write(json.dumps(log_entry, ensure_ascii=False) + "\n")
 
 # --- Interfaz de Streamlit ---
 st.set_page_config(page_title="Asistente de Tickets de Soporte", page_icon="🎫")
