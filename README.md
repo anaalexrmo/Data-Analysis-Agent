@@ -10,17 +10,13 @@ Este proyecto fue desarrollado como capstone del curso de AI Builder de Alura. U
 
 ## 🏗️ Arquitectura
 
-Usuario → Streamlit (interfaz de chat)
-↓
-Pregunta en lenguaje natural
-↓
-Embeddings (Gemini) → Búsqueda semántica en FAISS
-↓
-Top 3 tickets más relevantes (con umbral de relevancia)
-↓
-LLM (Gemini 2.5 Flash) genera respuesta usando SOLO ese contexto
-↓
-Respuesta + Ticket IDs citados + botones de feedback
+Usuario
+  -> Streamlit (interfaz de chat)
+  -> Pregunta en lenguaje natural
+  -> Embeddings (Gemini) -> Búsqueda semántica en FAISS
+  -> Top 3 tickets más relevantes (con umbral de relevancia)
+  -> LLM (Gemini 2.5 Flash) genera respuesta usando SOLO ese contexto
+  -> Respuesta + Ticket IDs citados + botones de feedback
 
 **Componentes:**
 - **Dataset:** [Customer Support Ticket Dataset](https://www.kaggle.com/datasets/muqaddasejaz/customer-support-ticket-dataset) (Kaggle), 8,469 tickets, muestra de 100 usada para el vector store.
