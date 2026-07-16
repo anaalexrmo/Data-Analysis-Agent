@@ -29,6 +29,39 @@ def cargar_recursos():
 
 vector_store, llm = cargar_recursos()
 
+UMBRAL_RELEVANCIA = 0.7
+
+def responder_pregunta(pregunta):
+    resultados = vector_store.similarity_search_with_score(pregunta, k=3)
+    resultados_relevantes = [(doc, score) for doc, score in resultados if score < UMBRAL_RELEVANCIA]
+
+    if not resultados_relevantes:
+        return {
+            "respuesta": "No encontré información relevante en los tickets disponibles para responder esta pregunta.",
+            "fuentes": []
+        }
+
+    contexto = "\n\n".join([
+        f"[Ticket ID: {doc.metadata['ticket_id']}]\n{doc.page_content}"
+        for doc, score in resultados_relevantes
+    ])
+
+    prompt = f"""Eres un asistente que responde preguntas ÚNICAMENTE basándote en el contexto de tickets de soporte proporcionado abajo.
+No uses conocimiento externo. Si la información no está en el contexto, dilo claramente.
+Siempre indica el Ticket ID de donde sacaste cada dato.
+
+Contexto:
+{contexto}
+
+Pregunta: {pregunta}
+
+Respuesta (indica el Ticket ID de tus fuentes):"""
+
+    respuesta = llm.invoke(prompt)
+    fuentes = [doc.metadata['ticket_id'] for doc, score in resultados_relevantes]
+
+    return {"respuesta": respuesta.content, "fuentes": fuentes}
+
 # --- Interfaz de Streamlit ---
 st.set_page_config(page_title="Asistente de Tickets de Soporte", page_icon="🎫")
 
